@@ -1,6 +1,11 @@
 const {cursosImportados} = require ('./cursos');
 //console.log(cursosImportados);
 const {crearArchivoMatricula} = require ('./archivo');
+const express = require('express');
+const app = express();
+
+app.use(express.static(__dirname + '/public'));
+app.listen(3000);
 
 
 
@@ -82,3 +87,8 @@ if (id != null && nombre != null && cedula != null) {
     })
   });
 }
+
+app.post('/', function(req, res){
+  // compute 'result'
+  res.send('oeee');
+});
