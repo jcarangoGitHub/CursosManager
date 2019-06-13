@@ -1,0 +1,66 @@
+{{>header}}
+<div class="container">
+  <form action="/createCourse" method="post">
+    <div class="form-group">
+      <h5 class="card-title">Create course</h5>
+      <br>
+      <div class="form-row">
+        <div class="col-md-2 mb-3">
+          <div class="form-group">
+            <label for="labelIdCourse">ID</label>
+            <input type="number" class="form-control" name="idCourse" aria-describedby="Id course" required>
+            <small id="idHelp" class="form-text text-muted">An unique id to identify the course</small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="labelNameCourse">Name</label>
+            <input type="text" class="form-control" name="courseName" aria-describedby="Course name" required>
+            <small id="nameHelp" class="form-text text-muted">Full name of the course</small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="labelDescriptionCourse">Description</label>
+            <input type="text" class="form-control" name="courseDescription" aria-describedby="Course description" required>
+            <small id="descripcionHelp" class="form-text text-muted">A course description</small>
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="form-group">
+            <label for="labelValueCourse">Value</label>
+            <input type="number" class="form-control" name="courseValue" aria-describedby="Course value" required>
+            <small id="valueHelp" class="form-text text-muted">The course value ($)</small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="labelValueCourse">Modality</label>
+            <select class="custom-select" name="courseModality">
+              <option selected>Select</option>
+              <option value="1">Virtual</option>
+              <option value="2">Face to face</option>
+            </select>
+            <small id="modalityHelp" class="form-text text-muted">The course modality</small>
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="form-group">
+            <label for="labelModalityCourse">Intensity</label>
+            <input type="number" class="form-control" name="courseModality" aria-describedby="Course intensity">
+            <small id="intensityHelp" class="form-text text-muted">The course intensity</small>
+          </div>
+        </div>
+      </div>
+
+
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </form>
+
+  <br>
+{{>footer}}

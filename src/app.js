@@ -24,17 +24,24 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/formNewCourse', (req, res) => {
+  res.render(directorioviews + 'formNewCourse', {
+
+  });
+});
+
 app.post('/createCourse', (req, res) => {
-  //console.log(req.query);
+  console.log(req.query);
   console.log('creating');
-  let body = req.body;
+  console.log(req.body.courseName);
   res.render(directorioviews + 'createCourse', {
-    id: body.id,
-    name: body.name,
-    description: body.description,
-    amount: body.amount,
-    modality: body.modality,
-    intensity: body.intensity
+    id: req.body.idCourse,
+    name: req.body.courseName,
+    description: req.body.courseDescription,
+    value: parseInt(req.body.courseValue),
+    modality: parseInt(req.body.courseModality),
+    intensity: parseInt(req.body.courseModality)
+    //console.log(id + "-" + name + "-" + description + "-" + value + "-" + modality + "-" + intensity )
   });
 });
 

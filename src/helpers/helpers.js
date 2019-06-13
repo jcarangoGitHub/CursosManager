@@ -1,13 +1,41 @@
 const hbs = require('hbs');
+const fs = require('fs');
+listCourses = [];
 
-hbs.registerHelper('mostrarLogin', () => {
-
+hbs.registerHelper('createCourse', (id, name, description, value, modality, intensity) => {
+  listCourses = require('../../listaCursos.json');
+  let duplicated = listCourses.find(course => course.id == id);
+  console.log(duplicated);
+  let text = "";
+  if (!duplicated) {
+    let newCourse = {
+      id: id,
+      name: name,
+      description: description,
+      value: value,
+      modality: modality,
+      intensity: intensity,
+      state: 'available'
+    }
+    listCourses.push(newCourse);
+    console.log(listCourses);
+    saveCourse();
+    text = "Course created successful!";
+  } else {
+    text = "The course with ID " + id + " is already created, please try with other ID";
+  }
+  return text;
+  //return "creando" + name//id + name + description + value + modality + intensity
 });
 
-
-hbs.registerHelper('obtenerPromedio', (nota1, nota2, nota3) => {
-  return (nota1 + nota2 + nota3) / 3
-});
+const saveCourse = () => {
+  let data = JSON.stringify(listCourses);
+  console.log('saving ' + data);
+  fs.writeFile('listaCursos.json', data, (err)=>{
+    if (err) throw (err);
+    console.log('Course created!');
+  });
+}
 
 hbs.registerHelper('listar',  () => {
   console.log('listando...')
