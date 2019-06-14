@@ -64,6 +64,12 @@ app.post('/registerStudent', (req, res) => {
   });
 });
 
+app.get('/formStudentsByCourse', (req, res) => {
+  res.render(directorioviews + 'formStudentsByCourse', {
+    idCourse: req.query.idCourse
+  });
+});
+
 app.get('*', (req, res) => {
   res.render(directorioviews + 'error', {
     estudiante: 'error'

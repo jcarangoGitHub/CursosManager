@@ -35,6 +35,34 @@ const saveCourse = () => {
   });
 }
 
+hbs.registerHelper('showStudentsByCourse', (idCourse) => {
+  listStudents = require('../../listStudents.json');
+  studentsByCourse = [];
+  listStudents.forEach(student => {
+    if (student.idCourse == idCourse) {
+      studentsByCourse.push(student);
+    }
+  });
+  let htmlText = "<table class='table table-striped table-hover'> \
+              <thead class='thead-dark'> \
+              <th>Document Id</th> \
+              <th>Name</th> \
+              <th>Email</th> \
+              <th>Telephone</th> \
+              </thead> \
+              <tbody>";
+  studentsByCourse.forEach(student => {
+    htmlText = htmlText +
+    '<tr>' +
+    '<td>' + student.documentId + '</td>' +
+    '<td>' + student.name + '</td>' +
+    '<td>' + student.email + '</td>' +
+    '<td>' + student.telephone + '</td></tr>';
+  });
+  htmlText = htmlText + '</tbody></table>';
+  return htmlText;
+});
+
 hbs.registerHelper('showAvailableCourses', () => {
   listCourses = require('../../listCourses.json');
   let coursesAvailable = [];
@@ -50,7 +78,7 @@ hbs.registerHelper('showAvailableCourses', () => {
               <th>Description</th> \
               <th>Cost</th> \
               <th>Intensity</th> \
-              <th>Action</th> \
+              <th>Actions</th> \
               </thead> \
               <tbody>";
   coursesAvailable.forEach(course => {
@@ -61,7 +89,8 @@ hbs.registerHelper('showAvailableCourses', () => {
       '<td>' + course.description + '</td>' +
       '<td>' + course.value + '</td>' +
       '<td>' + course.intensity + '</td>' +
-      '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register</td>';
+      '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register  ' +
+      '- <a href="/formStudentsByCourse?idCourse=' + course.id + '" </a>Students registered </td></tr>';
   });
   htmlText = htmlText + '</tbody></table>';
   return htmlText;
@@ -71,16 +100,15 @@ hbs.registerHelper('getCourseName', (id) => {
   return getCourseName(id);
 });
 
-const getCourseName = (id) => {
+const getCourseName = (idCourse) => {
   listCourses = require('../../listCourses.json');
-  let course = listCourses.find(course => course.id == id);
+  let course = listCourses.find(course => course.id == idCourse);
   return course.name;
 }
 
 hbs.registerHelper('registerStudent', (idCourse, documentId, name, email, telephone) => {
   listStudents = require('../../listStudents.json');
   let student = listStudents.find(student => student.documentId == documentId);
-  console.log(student);
   let text = "";
   if (student && student.idCourse == idCourse) {
     text = "You can't register the student in the same course twice";
