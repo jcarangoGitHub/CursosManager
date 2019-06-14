@@ -31,9 +31,6 @@ app.get('/formNewCourse', (req, res) => {
 });
 
 app.post('/createCourse', (req, res) => {
-  console.log(req.query);
-  console.log('creating');
-  console.log(req.body.courseName);
   res.render(directorioviews + 'createCourse', {
     id: req.body.idCourse,
     name: req.body.courseName,
@@ -45,9 +42,25 @@ app.post('/createCourse', (req, res) => {
   });
 });
 
-app.get('/listado', (req, res) => {
-  res.render(directorioviews + 'listado', {
-    titulo: 'Listado'
+app.get('/formCourses', (req, res) => {
+  res.render(directorioviews + 'formCourses', {
+
+  });
+});
+
+app.get('/formRegister', (req, res) => {
+  res.render(directorioviews + 'formRegisterStudent', {
+    idCourse: req.query.idCourse
+  });
+});
+
+app.post('/registerStudent', (req, res) => {
+  res.render(directorioviews + 'registerStudent', {
+    idCourse: req.body.idCourse,
+    documentId: req.body.documentId,
+    name: req.body.name,
+    email: req.body.email,
+    telephone: req.body.telephone
   });
 });
 

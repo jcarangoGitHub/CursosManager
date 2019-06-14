@@ -1,0 +1,38 @@
+{{>header}}
+<div class="container">
+  <h5 class="card-title"> Register in the course {{{getCourseName idCourse}}}</h5>
+  <br>
+
+  <form action="/registerStudent" method="post">
+    <input type="hidden" name="idCourse" value="{{idCourse}}">
+    <div class="form-group">
+      <div class="form-row">
+        <div class="col-md-2 mb-3">
+          <label for="labelStudentId">Document ID</label>
+          <input type="text" class="form-control" name="documentId" aria-describedby="Document id" required>
+          <small id="idHelp" class="form-text text-muted">Student id</small>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="labelName">Name</label>
+          <input type="text" class="form-control" name="name" aria-describedby="Name" required>
+          <small id="idHelp" class="form-text text-muted">Student name</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <label for="labelStudentMail">Email</label>
+          <input type="email" class="form-control" name="email" aria-describedby="Email" required>
+          <small id="idHelp" class="form-text text-muted">Student email</small>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelStudentTel">Telephone</label>
+          <input type="text" class="form-control" name="telephone" aria-describedby="Telephone" required>
+          <small id="idHelp" class="form-text text-muted">Student telephone</small>
+        </div>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+  </form>
+</div>
+{{>footer}}

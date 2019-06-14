@@ -1,11 +1,11 @@
 const hbs = require('hbs');
 const fs = require('fs');
 listCourses = [];
+listStudents = [];
 
 hbs.registerHelper('createCourse', (id, name, description, value, modality, intensity) => {
-  listCourses = require('../../listaCursos.json');
+  listCourses = require('../../listCourses.json');
   let duplicated = listCourses.find(course => course.id == id);
-  console.log(duplicated);
   let text = "";
   if (!duplicated) {
     let newCourse = {
@@ -18,7 +18,6 @@ hbs.registerHelper('createCourse', (id, name, description, value, modality, inte
       state: 'available'
     }
     listCourses.push(newCourse);
-    console.log(listCourses);
     saveCourse();
     text = "Course created successful!";
   } else {
@@ -30,57 +29,80 @@ hbs.registerHelper('createCourse', (id, name, description, value, modality, inte
 
 const saveCourse = () => {
   let data = JSON.stringify(listCourses);
-  console.log('saving ' + data);
-  fs.writeFile('listaCursos.json', data, (err)=>{
+  fs.writeFile('listCourses.json', data, (err)=>{
     if (err) throw (err);
     console.log('Course created!');
   });
 }
 
-hbs.registerHelper('listar',  () => {
-  console.log('listando...')
-  listaEstudiantes = require('../listado.json');
-  let texto = "<table class='table table-striped table-hover'> \
+hbs.registerHelper('showAvailableCourses', () => {
+  listCourses = require('../../listCourses.json');
+  let coursesAvailable = [];
+  listCourses.forEach(course => {
+    if (course.state == 'available') {
+      coursesAvailable.push(course);
+    }
+  });
+  let htmlText = "<table class='table table-striped table-hover'> \
               <thead class='thead-dark'> \
-              <th>Nombre</th> \
-              <th>Matematicas</th> \
-              <th>Ingles</th> \
-              <th>Programación</th> \
+              <th>Id</th> \
+              <th>Name</th> \
+              <th>Description</th> \
+              <th>Cost</th> \
+              <th>Intensity</th> \
+              <th>Action</th> \
               </thead> \
               <tbody>";
-
-  listaEstudiantes.forEach(estudiante => {
-    texto = texto +
-    '<tr>' +
-    '<td>' + estudiante.nombre + '</td>' +
-    '<td>' + estudiante.matematicas + '</td>' +
-    '<td>'+ estudiante.ingles + '\n' + '</td>' +
-    '<td>' + estudiante.programacion + '</td></tr>';
+  coursesAvailable.forEach(course => {
+      htmlText = htmlText +
+      '<tr>' +
+      '<td>' + course.id + '</td>' +
+      '<td>' + course.name + '</td>' +
+      '<td>' + course.description + '</td>' +
+      '<td>' + course.value + '</td>' +
+      '<td>' + course.intensity + '</td>' +
+      '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register</td>';
   });
-  text = texto + '</tbody></table>';
-  return texto;
+  htmlText = htmlText + '</tbody></table>';
+  return htmlText;
 });
 
-hbs.registerHelper('listar2',  () => {
-  console.log('listando...')
-  listaEstudiantes = require('../listado.json');
-  let texto = "<div class='accordion' id='accordionExample'> \
-              <thead class='thead-dark'> \
-              <th>Nombre</th> \
-              <th>Matematicas</th> \
-              <th>Ingles</th> \
-              <th>Programación</th> \
-              </thead> \
-              <tbody>";
-
-  listaEstudiantes.forEach(estudiante => {
-    texto = texto +
-    '<tr>' +
-    '<td>' + estudiante.nombre + '</td>' +
-    '<td>' + estudiante.matematicas + '</td>' +
-    '<td>'+ estudiante.ingles + '\n' + '</td>' +
-    '<td>' + estudiante.programacion + '</td></tr>';
-  });
-  text = texto + '</tbody></table>';
-  return texto;
+hbs.registerHelper('getCourseName', (id) => {
+  return getCourseName(id);
 });
+
+const getCourseName = (id) => {
+  listCourses = require('../../listCourses.json');
+  let course = listCourses.find(course => course.id == id);
+  return course.name;
+}
+
+hbs.registerHelper('registerStudent', (idCourse, documentId, name, email, telephone) => {
+  listStudents = require('../../listStudents.json');
+  let student = listStudents.find(student => student.documentId == documentId);
+  console.log(student);
+  let text = "";
+  if (student && student.idCourse == idCourse) {
+    text = "You can't register the student in the same course twice";
+  } else {
+    let newStudent = {
+      idCourse: idCourse,
+      documentId: documentId,
+      name: name,
+      email: email,
+      telephone: telephone
+    }
+    listStudents.push(newStudent);
+    saveStudent();
+    text = "The student " + name + ' has been registered successful in course ' + getCourseName(idCourse) + '!!';
+  }
+  return text;
+});
+
+const saveStudent = () => {
+  let data = JSON.stringify(listStudents);
+  fs.writeFile('listStudents.json', data, (err)=>{
+    if (err) throw (err);
+    console.log('Student registered!');
+  });
+}
