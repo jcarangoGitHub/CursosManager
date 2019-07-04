@@ -1,10 +1,13 @@
 const hbs = require('hbs');
 const fs = require('fs');
+const jsonConnection = require('../connections/jsonConnection');
+
 listCourses = [];
 listStudents = [];
 
 hbs.registerHelper('createCourse', (id, name, description, value, modality, intensity) => {
-  listCourses = require('../../listCourses.json');
+  //listCourses = require('../../listCourses.json');
+  listCourses = jsonConnection.listCourses();
   let duplicated = listCourses.find(course => course.id == id);
   let text = "";
   if (!duplicated) {
