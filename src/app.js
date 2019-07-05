@@ -1,24 +1,38 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const hbs = require('hbs');
+//const hbs = require('hbs');
 const bodyParser = require('body-parser');
-require('./helpers/helpers');
 
+//require('./helpers/helpers');
+require('./config/config');
 
 const directoriopublico = path.join(__dirname, '../public');
-const directoriopartials = path.join(__dirname, '../template/partials');
-const directorioviews = '../template/views/';
+const dirNodeModules = path.join(__dirname, '../node_modules');
+//const directoriopartials = path.join(__dirname, '../template/partials');
+//const directorioviews = '../template/views/';
 
-app.use(express.static(directoriopublico));
-hbs.registerPartials(directoriopartials);
-app.use(bodyParser.urlencoded({extended: false}));
+//app.use(express.static(directoriopublico));
+//hbs.registerPartials(directoriopartials);
+//app.use(bodyParser.urlencoded({extended: false}));
 
 //console.log(__dirname)
 
-app.set ('view engine', 'hbs');
+//app.set ('view engine', 'hbs');
 
-app.get('/', (req, res) => {
+//static
+app.use(express.static(directoriopublico));
+app.use('/js', express.static(dirNodeModules + '/jquery/'))
+app.use('/js', express.static(dirNodeModules + '/popper.js/'))
+
+//Body parser
+app.use(bodyParser.urlencoded({extended: false}));
+
+//Routes
+app.use(require('./routes/index'))
+
+
+/*app.get('/', (req, res) => {
   res.render(directorioviews + 'index', {
 
   });
@@ -80,7 +94,6 @@ app.get('*', (req, res) => {
   res.send('Hello World')
 })*/
 
-
-app.listen(3000, () => {
-  console.log('Escuchando en el puerto 3000')
+app.listen(process.env.PORT, () => {
+  console.log('Escuchando en el puerto ' + process.env.PORT);
 });
