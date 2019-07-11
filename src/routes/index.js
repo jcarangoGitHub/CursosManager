@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const hbs = require('hbs');
-
+const Course = require('./../models/course');
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
 
@@ -15,7 +15,7 @@ hbs.registerPartials(dirPartials);
 
 app.get('/', (req, res) => {
   res.render(dirViews + 'index', {
-
+    myTitle: req.body.myTitle
   });
 });
 
@@ -26,6 +26,28 @@ app.get('/formNewCourse', (req, res) => {
 });
 
 app.post('/createCourse', (req, res) => {
+
+  let course = new Course({
+    id: req.body.idCourse,
+    name: req.body.courseName,
+    description: req.body.courseDescription,
+    value: parseInt(req.body.courseValue),
+    modality: parseInt(req.body.courseModality),
+    intensity: parseInt(req.body.courseModality)
+  })
+
+  course.save((err, result) => {
+    if (err) {
+      res.render(dirViews + 'index', {
+        myTitle: err
+      })
+    }
+    res.render(dirViews + 'index', {
+      myTitle: result
+    })
+  }) 
+
+/*
   res.render(dirViews + 'createCourse', {
     id: req.body.idCourse,
     name: req.body.courseName,
@@ -35,6 +57,7 @@ app.post('/createCourse', (req, res) => {
     intensity: parseInt(req.body.courseModality)
     //console.log(id + "-" + name + "-" + description + "-" + value + "-" + modality + "-" + intensity )
   });
+  */
 });
 
 app.get('/formCourses', (req, res) => {
