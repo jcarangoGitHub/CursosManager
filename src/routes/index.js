@@ -53,9 +53,7 @@ app.get('/formStudentsByCourse', (req, res) => {
         idCourse: req.query.idCourse,
         resListStudents: result
       });
-  })
-
-
+  });
 });
 
 app.get('*', (req, res) => {
@@ -67,27 +65,39 @@ app.get('*', (req, res) => {
 
 //POST METHODS
 app.post('/createCourse', (req, res) => {
-
-  let course = new Course({
-    id: req.body.idCourse,
-    name: req.body.courseName,
-    description: req.body.courseDescription,
-    value: parseInt(req.body.courseValue),
-    modality: parseInt(req.body.courseModality),
-    intensity: parseInt(req.body.courseIntensity),
-    status: 'available'
-  })
-
-  course.save((err, result) => {
+  Course.findOne({id: req.body.idCourse}).exec((err, result) => {
     if (err) {
+      return console.log(err);
+    }
+    if (result) {
       res.render(dirViews + 'index', {
-        myTitle: err
+        myTitle: 'The course with ID ' + req.body.idCourse + ' is already created, please try with other ID'
+      })
+    } else {
+      let course = new Course({
+        id: req.body.idCourse,
+        name: req.body.courseName,
+        description: req.body.courseDescription,
+        value: parseInt(req.body.courseValue),
+        modality: parseInt(req.body.courseModality),
+        intensity: parseInt(req.body.courseIntensity),
+        status: 'available'
+      })
+
+      course.save((err, result) => {
+        if (err) {
+          res.render(dirViews + 'index', {
+            myTitle: err
+          })
+        }
+        res.render(dirViews + 'index', {
+          myTitle: 'Course ' + result.name + ' created successfully!'
+        })
       })
     }
-    res.render(dirViews + 'index', {
-      myTitle: 'Course ' + result.name + ' created successfully!'
-    })
-  })
+  });
+
+
 
 /*
   res.render(dirViews + 'createCourse', {
