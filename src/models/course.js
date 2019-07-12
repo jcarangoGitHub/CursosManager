@@ -23,6 +23,10 @@ const courseSchema = new Schema({
   },
   intensity: {
     type: Number
+  },
+  status: {
+    type: String,
+    require: true
   }
 });
 

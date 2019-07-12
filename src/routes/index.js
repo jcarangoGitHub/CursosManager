@@ -14,6 +14,7 @@ app.set ('view engine', 'hbs');
 app.set ('views', dirViews);
 hbs.registerPartials(dirPartials);
 
+//GET METHODS
 app.get('/', (req, res) => {
   res.render(dirViews + 'index', {
     myTitle: req.body.myTitle
@@ -27,9 +28,14 @@ app.get('/formNewCourse', (req, res) => {
 });
 
 app.get('/formCourses', (req, res) => {
-  res.render(dirViews + 'formCourses', {
-
-  });
+    Course.find({status: 'available'}).exec((err, result) => {
+      if (err) {
+        return console.log(err)
+      }
+      res.render(dirViews + 'formCourses', {
+        resListCourses: result
+      })
+    });
 });
 
 app.get('/formRegister', (req, res) => {
@@ -39,9 +45,17 @@ app.get('/formRegister', (req, res) => {
 });
 
 app.get('/formStudentsByCourse', (req, res) => {
-  res.render(dirViews + 'formStudentsByCourse', {
-    idCourse: req.query.idCourse
-  });
+  Student.find({idCourse: req.query.idCourse}).exec((err, result) => {
+      if (err) {
+        return console.log(err)
+      }
+      res.render(dirViews + 'formStudentsByCourse', {
+        idCourse: req.query.idCourse,
+        resListStudents: result
+      });
+  })
+
+
 });
 
 app.get('*', (req, res) => {
@@ -50,6 +64,8 @@ app.get('*', (req, res) => {
   });
 });
 
+
+//POST METHODS
 app.post('/createCourse', (req, res) => {
 
   let course = new Course({
@@ -58,7 +74,8 @@ app.post('/createCourse', (req, res) => {
     description: req.body.courseDescription,
     value: parseInt(req.body.courseValue),
     modality: parseInt(req.body.courseModality),
-    intensity: parseInt(req.body.courseModality)
+    intensity: parseInt(req.body.courseIntensity),
+    status: 'available'
   })
 
   course.save((err, result) => {
@@ -68,7 +85,7 @@ app.post('/createCourse', (req, res) => {
       })
     }
     res.render(dirViews + 'index', {
-      myTitle: 'Course ' + name + ' created successfully!'
+      myTitle: 'Course ' + result.name + ' created successfully!'
     })
   })
 
@@ -101,7 +118,7 @@ app.post('/registerStudent', (req, res) => {
       })
     }
     res.render(dirViews + 'index', {
-      myTitle: 'The student ' + name + ' has been registered in course ' + idCourse
+      myTitle: 'The student ' + result.name + ' has been registered in course ' + result.idCourse
     })
   });
 

@@ -1,6 +1,7 @@
 const hbs = require('hbs');
 const fs = require('fs');
 const jsonConnection = require('../connections/jsonConnection');
+const Course = require('./../models/course');
 
 listCourses = [];
 listStudents = [];
@@ -38,14 +39,15 @@ const saveCourse = () => {
   });
 }
 
-hbs.registerHelper('showStudentsByCourse', (idCourse) => {
-  listStudents = require('../../listStudents.json');
-  studentsByCourse = [];
+hbs.registerHelper('showStudentsByCourse', (idCourse, resListStudents) => {
+  //listStudents = require('../../listStudents.json');
+  /*studentsByCourse = [];
   listStudents.forEach(student => {
     if (student.idCourse == idCourse) {
       studentsByCourse.push(student);
     }
   });
+  */
   let htmlText = "<table class='table table-striped table-hover'> \
               <thead class='thead-dark'> \
               <th>Document Id</th> \
@@ -54,7 +56,8 @@ hbs.registerHelper('showStudentsByCourse', (idCourse) => {
               <th>Telephone</th> \
               </thead> \
               <tbody>";
-  studentsByCourse.forEach(student => {
+  //studentsByCourse.forEach(student => {
+  resListStudents.forEach(student => {
     htmlText = htmlText +
     '<tr>' +
     '<td>' + student.documentId + '</td>' +
@@ -66,10 +69,10 @@ hbs.registerHelper('showStudentsByCourse', (idCourse) => {
   return htmlText;
 });
 
-hbs.registerHelper('showAvailableCourses', () => {
-  listCourses = require('../../listCourses.json');
+hbs.registerHelper('showAvailableCourses', (resListCourses) => {
+  //listCourses = require('../../listCourses.json');
   let coursesAvailable = [];
-  listCourses.forEach(course => {
+  resListCourses.forEach(course => {
     if (course.state == 'available') {
       coursesAvailable.push(course);
     }
@@ -84,7 +87,8 @@ hbs.registerHelper('showAvailableCourses', () => {
               <th>Actions</th> \
               </thead> \
               <tbody>";
-  coursesAvailable.forEach(course => {
+  //coursesAvailable.forEach(course => {
+  resListCourses.forEach(course => {
       htmlText = htmlText +
       '<tr>' +
       '<td>' + course.id + '</td>' +
@@ -99,15 +103,26 @@ hbs.registerHelper('showAvailableCourses', () => {
   return htmlText;
 });
 
-hbs.registerHelper('getCourseName', (id) => {
-  return getCourseName(id);
+hbs.registerHelper('getCourseName', (idCourse) => {
+  //return getCourseName(id);
+  return getCourseNameMongo(idCourse, function(name) { return name});
 });
 
+let getCourseNameMongo = (idCourse, callback) => {
+  Course.findOne({id: idCourse}).exec((err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    callback (result.name);
+  });
+}
+
+/*
 const getCourseName = (idCourse) => {
   listCourses = require('../../listCourses.json');
   let course = listCourses.find(course => course.id == idCourse);
   return course.name;
-}
+}*/
 
 hbs.registerHelper('registerStudent', (idCourse, documentId, name, email, telephone) => {
   listStudents = require('../../listStudents.json');
