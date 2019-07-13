@@ -26,7 +26,8 @@ const courseSchema = new Schema({
   },
   status: {
     type: String,
-    require: true
+    require: true,
+    default: 'available'
   }
 });
 

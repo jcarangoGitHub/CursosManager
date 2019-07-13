@@ -1,7 +1,7 @@
 {{>header}}
 <div class="container">
   <input type="hidden" name="idCourse" value="{{idCourse}}">
-  <h5 class="card-title">Registered students in the {{{getCourseName idCourse}}} course</h5>
+  <h5 class="card-title">Students: </h5> <h1>{{nameCourse}}</h1>
   {{{showStudentsByCourse idCourse resListStudents}}}
   <br>
 </div>

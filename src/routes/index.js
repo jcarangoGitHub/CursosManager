@@ -51,6 +51,7 @@ app.get('/formStudentsByCourse', (req, res) => {
       }
       res.render(dirViews + 'formStudentsByCourse', {
         idCourse: req.query.idCourse,
+        nameCourse: req.query.nameCourse,
         resListStudents: result
       });
   });
@@ -80,8 +81,8 @@ app.post('/createCourse', (req, res) => {
         description: req.body.courseDescription,
         value: parseInt(req.body.courseValue),
         modality: parseInt(req.body.courseModality),
-        intensity: parseInt(req.body.courseIntensity),
-        status: 'available'
+        intensity: parseInt(req.body.courseIntensity)
+        //status: 'available'
       })
 
       course.save((err, result) => {
@@ -142,6 +143,22 @@ app.post('/registerStudent', (req, res) => {
   */
 });
 
-
+app.post('/deleteStudentFromCourse', (req, res) => {
+  console.log('deteling...' + req.body.idCourse + '-' + req.body.documentId);
+  Student.findOneAndDelete({idCourse: req.body.idCourse, documentId: req.body.documentId}, req.body, (err, result) => {
+    if (err) {
+      return console.log(err)
+    }
+    console.log(result)
+    if (!result) {
+      res.render(dirViews + 'index', {
+        myTitle: 'The student has been not found'
+      })
+    }
+    res.render(dirViews + 'index', {
+      myTitle: 'The student ' + result.name + ' has been removed from the course ' + result.idCourse
+    })
+  })
+});
 
 module.exports = app;

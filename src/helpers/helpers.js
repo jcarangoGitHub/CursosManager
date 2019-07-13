@@ -48,24 +48,30 @@ hbs.registerHelper('showStudentsByCourse', (idCourse, resListStudents) => {
     }
   });
   */
-  let htmlText = "<table class='table table-striped table-hover'> \
+  let htmlText = '<form action="/deleteStudentFromCourse" method="post">'+
+              '<input type="hidden" name="idCourse" value='+idCourse+'>' +
+              "<table class='table table-striped table-hover'> \
               <thead class='thead-dark'> \
               <th>Document Id</th> \
               <th>Name</th> \
               <th>Email</th> \
               <th>Telephone</th> \
+              <th>Actions</th> \
               </thead> \
               <tbody>";
   //studentsByCourse.forEach(student => {
   resListStudents.forEach(student => {
     htmlText = htmlText +
-    '<tr>' +
-    '<td>' + student.documentId + '</td>' +
-    '<td>' + student.name + '</td>' +
-    '<td>' + student.email + '</td>' +
-    '<td>' + student.telephone + '</td></tr>';
+    `<tr>
+    <td> ${student.documentId}
+      <input type="hidden" name="documentId" value="${student.documentId}">
+    </td>
+    <td> ${student.name} </td>
+    <td> ${student.email} </td>
+    <td> ${student.telephone} </td>
+    <td><button class="btn btn-danger">Delete</button> </td></tr>`;
   });
-  htmlText = htmlText + '</tbody></table>';
+  htmlText = htmlText + '</tbody></table></form>';
   return htmlText;
 });
 
@@ -97,7 +103,8 @@ hbs.registerHelper('showAvailableCourses', (resListCourses) => {
       '<td>' + course.value + '</td>' +
       '<td>' + course.intensity + '</td>' +
       '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register  ' +
-      '- <a href="/formStudentsByCourse?idCourse=' + course.id + '" </a>Students registered </td></tr>';
+      '- <a href="/formStudentsByCourse?idCourse=' + course.id + '&nameCourse='+
+        course.name +'" </a>Students registered </td></tr>';
   });
   htmlText = htmlText + '</tbody></table>';
   return htmlText;
