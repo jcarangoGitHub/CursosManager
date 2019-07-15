@@ -7,6 +7,7 @@ const Student = require('./../models/student');
 const User = require('./../models/user');
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
+const bcrypt = require('bcrypt');
 
 require('../helpers/helpers');
 
@@ -72,8 +73,34 @@ app.get('*', (req, res) => {
 
 
 //POST METHODS
-app.post('/createNewUser', (req, res) => {
+app.post('/login', (req, res) => {
   console.log(req.body.email);
+  User.findOne({$or: [{email: req.body.email}, {userName: req.body.email}] }).exec((err, result) => {
+    if (err) {
+      return console.log(err)
+    }
+
+    if (result) {
+      console.log(req.body.userPassword);
+      if (bcrypt.compareSync(req.body.userPassword, result.password)) {
+        res.render(dirViews + 'index', {
+          myTitle: 'Welcome ' + result.firstName
+        })
+      } else {
+        res.render(dirViews + 'index', {
+          myTitle: 'Password incorrect'
+        })
+      }
+
+    } else {
+      res.render(dirViews + 'index', {
+        myTitle: 'User name or email not found'
+      })
+    }
+  })
+})
+
+app.post('/createNewUser', (req, res) => {
   let user = new User({
     documentId: req.body.documentId,
     lastName: req.body.lastName,
@@ -81,7 +108,7 @@ app.post('/createNewUser', (req, res) => {
     rol: req.body.rol,
     email: req.body.email,
     userName: req.body.userName,
-    password: req.body.password
+    password: bcrypt.hashSync(req.body.password, 10)
   });
 
   user.save((err, result) => {
@@ -90,7 +117,7 @@ app.post('/createNewUser', (req, res) => {
         myTitle: err
       })
     }
-    console.log(result);
+
     res.render(dirViews + 'index', {
       myTitle: 'User  created successfully!'
     })
