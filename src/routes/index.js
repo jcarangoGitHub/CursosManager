@@ -4,6 +4,7 @@ const path = require('path');
 const hbs = require('hbs');
 const Course = require('./../models/course');
 const Student = require('./../models/student');
+const User = require('./../models/user');
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
 
@@ -57,6 +58,12 @@ app.get('/formStudentsByCourse', (req, res) => {
   });
 });
 
+app.get('/newUser', (req, res) => {
+  res.render(dirViews + 'formNewUser', {
+
+  });
+});
+
 app.get('*', (req, res) => {
   res.render(dirViews + 'error', {
     estudiante: 'error'
@@ -65,6 +72,31 @@ app.get('*', (req, res) => {
 
 
 //POST METHODS
+app.post('/createNewUser', (req, res) => {
+  console.log(req.body.email);
+  let user = new User({
+    documentId: req.body.documentId,
+    lastName: req.body.lastName,
+    firstName: req.body.firstName,
+    rol: req.body.rol,
+    email: req.body.email,
+    userName: req.body.userName,
+    password: req.body.password
+  });
+
+  user.save((err, result) => {
+    if (err) {
+      res.render(dirViews + 'index', {
+        myTitle: err
+      })
+    }
+    console.log(result);
+    res.render(dirViews + 'index', {
+      myTitle: 'User  created successfully!'
+    })
+  })
+})
+
 app.post('/createCourse', (req, res) => {
   Course.findOne({id: req.body.idCourse}).exec((err, result) => {
     if (err) {

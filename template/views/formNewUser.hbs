@@ -1,0 +1,59 @@
+{{>header}}
+<div class="container">
+  <form action="/createNewUser" method="post">
+    <div class="form-group">
+      <h5 class="card-title">New user</h5>
+      <br>
+      <!--ROW 1-->
+      <div class="form-row">
+        <div class="col-md-2 mb-3">
+          <label for="labelDocumentId">Document ID</label>
+          <input type="text" class="form-control" name="documentId" aria-describedby="Document id" required>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelLastName">Last name</label>
+          <input type="text" class="form-control" name="lastName" aria-describedby="Last name" required>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelFirstName">First name</label>
+          <input type="text" class="form-control" name="firstName" aria-describedby="First name" required>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelRol">Rol</label>
+          <select class="custom-select" name="rol" required>
+            <option selected>Select</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="candidate">Student candidate</option>
+          </select>
+          <small id="rolHelp" class="form-text text-muted">User rol</small>
+        </div>
+      </div>
+      <!--ROW 2-->
+      <div class="form-row">
+        <div class="col-md-2 mb-3">
+          <label for="labelStudentMail">Email</label>
+          <input type="email" class="form-control" name="email" aria-describedby="Email" required>
+          <small id="emailHelp" class="form-text text-muted">Unique email</small>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelUserName">User name</label>
+          <input type="text" class="form-control" name="userName" aria-describedby="User name">
+          <small id="userNameHelp" class="form-text text-muted">Unique user name</small>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelPassword">Password</label>
+          <input type="text" class="form-control" name="password" aria-describedby="Password" required>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="labelRepeatPassword">Repeat password</label>
+          <input type="text" class="form-control" name="repeatPassword" aria-describedby="Repeat password" required>
+        </div>
+      </div>
+      <!--ROW 2-->
+      <div class="form-row">
+        <button class="btn btn-dark">Create user</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{>footer}}
