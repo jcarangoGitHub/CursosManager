@@ -75,7 +75,7 @@ hbs.registerHelper('showStudentsByCourse', (idCourse, resListStudents) => {
   return htmlText;
 });
 
-hbs.registerHelper('showAvailableCourses', (resListCourses) => {
+hbs.registerHelper('showAvailableCourses', (resListCourses, userRol) => {
   //listCourses = require('../../listCourses.json');
   let coursesAvailable = [];
   resListCourses.forEach(course => {
@@ -101,10 +101,20 @@ hbs.registerHelper('showAvailableCourses', (resListCourses) => {
       '<td>' + course.name + '</td>' +
       '<td>' + course.description + '</td>' +
       '<td>' + course.value + '</td>' +
-      '<td>' + course.intensity + '</td>' +
-      '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register  ' +
-      '- <a href="/formStudentsByCourse?idCourse=' + course.id + '&nameCourse='+
-        course.name +'" </a>Students registered </td></tr>';
+      '<td>' + course.intensity + '</td>';
+      if (userRol == 'coordinator') {
+        htmlText = htmlText +
+        '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register  ' +
+            '- <a href="/formStudentsByCourse?idCourse=' + course.id + '&nameCourse='+
+            course.name +'" </a>Students registered </td></tr>';
+      } else {
+        htmlText = htmlText +
+        '<td><a href="/formRegister?idCourse=' + course.id + '" </a>Register  ' +
+        '</td></tr>';
+      }
+
+
+
   });
   htmlText = htmlText + '</tbody></table>';
   return htmlText;
@@ -112,7 +122,9 @@ hbs.registerHelper('showAvailableCourses', (resListCourses) => {
 
 hbs.registerHelper('getCourseName', (idCourse) => {
   //return getCourseName(id);
-  return getCourseNameMongo(idCourse, function(name) { return name});
+  return getCourseNameMongo(idCourse, function(name) {
+    return name
+  });
 });
 
 let getCourseNameMongo = (idCourse, callback) => {

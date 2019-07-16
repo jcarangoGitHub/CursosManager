@@ -3,11 +3,12 @@ const app = express();
 const path = require('path');
 const hbs = require('hbs');
 const Course = require('./../models/course');
-const Student = require('./../models/student');
+const RegisteredStudent = require('./../models/registeredStudents');
 const User = require('./../models/user');
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
 const bcrypt = require('bcrypt');
+var session = require('express-session');
 
 require('../helpers/helpers');
 
@@ -15,6 +16,13 @@ require('../helpers/helpers');
 app.set ('view engine', 'hbs');
 app.set ('views', dirViews);
 hbs.registerPartials(dirPartials);
+
+//SESSION
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
 
 //GET METHODS
 app.get('/', (req, res) => {
@@ -24,30 +32,70 @@ app.get('/', (req, res) => {
 });
 
 app.get('/formNewCourse', (req, res) => {
+  if (req.session.userRol != 'coordinator') {
+    res.render(dirViews + 'index', {
+      myTitle: 'User not allowed to see this page'
+    })
+  }
   res.render(dirViews + 'formNewCourse', {
 
   });
 });
 
 app.get('/formCourses', (req, res) => {
-    Course.find({status: 'available'}).exec((err, result) => {
-      if (err) {
-        return console.log(err)
-      }
-      res.render(dirViews + 'formCourses', {
-        resListCourses: result
-      })
-    });
+  if (!req.session.userRol) {
+    res.render(dirViews + 'index', {
+      myTitle: 'You must login to see this page'
+    })
+  } else {
+    switch (req.session.userRol) {
+      case 'coordinator':
+        Course.find({status: 'available'}).exec((err, result) => {
+          if (err) {
+            return console.log(err)
+          }
+          res.render(dirViews + 'formCourses', {
+            resListCourses: result,
+            userRol: req.session.userRol
+          })
+        });
+        break;
+      case 'candidate':
+        Course.find().exec((err, result) => {
+          if (err) {
+            return console.log(err)
+          }
+          res.render(dirViews + 'formCourses', {
+            resListCourses: result,
+            userRol: req.session.userRol
+          })
+        });
+        break;
+      default:
+
+    }
+
+  }
 });
 
 app.get('/formRegister', (req, res) => {
-  res.render(dirViews + 'formRegisterStudent', {
-    idCourse: req.query.idCourse
+  User.findById(req.session.user, (err, result) => {
+    if (err) {
+      return console.log(err)
+    }
+    res.render(dirViews + 'formRegisterStudent', {
+      idCourse: req.query.idCourse,
+      user: result
+      /*documentId: result.documentId,
+      studentName: result.firstName + ' ' + result.lastName,
+      email: result.email,
+      telephone: result.telephone*/
+    });
   });
 });
 
 app.get('/formStudentsByCourse', (req, res) => {
-  Student.find({idCourse: req.query.idCourse}).exec((err, result) => {
+  RegisteredStudent.find({idCourse: req.query.idCourse}).exec((err, result) => {
       if (err) {
         return console.log(err)
       }
@@ -74,15 +122,15 @@ app.get('*', (req, res) => {
 
 //POST METHODS
 app.post('/login', (req, res) => {
-  console.log(req.body.email);
   User.findOne({$or: [{email: req.body.email}, {userName: req.body.email}] }).exec((err, result) => {
     if (err) {
       return console.log(err)
     }
 
     if (result) {
-      console.log(req.body.userPassword);
       if (bcrypt.compareSync(req.body.userPassword, result.password)) {
+        req.session.user = result._id
+        req.session.userRol = result.rol
         res.render(dirViews + 'index', {
           myTitle: 'Welcome ' + result.firstName
         })
@@ -173,7 +221,7 @@ app.post('/createCourse', (req, res) => {
 });
 
 app.post('/registerStudent', (req, res) => {
-  let student = new Student({
+  let student = new RegisteredStudent({
     idCourse: req.body.idCourse,
     documentId: req.body.documentId,
     name: req.body.name,
@@ -188,7 +236,7 @@ app.post('/registerStudent', (req, res) => {
       })
     }
     res.render(dirViews + 'index', {
-      myTitle: 'The student ' + result.name + ' has been registered in course ' + result.idCourse
+      myTitle: 'Student registered successful!'
     })
   });
 
@@ -203,12 +251,10 @@ app.post('/registerStudent', (req, res) => {
 });
 
 app.post('/deleteStudentFromCourse', (req, res) => {
-  console.log('deteling...' + req.body.idCourse + '-' + req.body.documentId);
-  Student.findOneAndDelete({idCourse: req.body.idCourse, documentId: req.body.documentId}, req.body, (err, result) => {
+  RegisteredStudent.findOneAndDelete({idCourse: req.body.idCourse, documentId: req.body.documentId}, req.body, (err, result) => {
     if (err) {
       return console.log(err)
     }
-    console.log(result)
     if (!result) {
       res.render(dirViews + 'index', {
         myTitle: 'The student has been not found'

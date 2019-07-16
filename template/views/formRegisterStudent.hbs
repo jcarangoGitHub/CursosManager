@@ -9,24 +9,32 @@
       <div class="form-row">
         <div class="col-md-2 mb-3">
           <label for="labelStudentId">Document ID</label>
-          <input type="text" class="form-control" name="documentId" aria-describedby="Document id" required>
+          <input type="text" class="form-control" name="documentId"
+                 aria-describedby="Document id" required readonly
+                 value="{{user.documentId}}">
           <small id="idHelp" class="form-text text-muted">Student id</small>
         </div>
         <div class="col-md-4 mb-3">
           <label for="labelName">Name</label>
-          <input type="text" class="form-control" name="name" aria-describedby="Name" required>
+          <input type="text" class="form-control" name="name"
+                 aria-describedby="Name" required readonly
+                 value="{{user.firstName}} {{user.lastName}}">
           <small id="idHelp" class="form-text text-muted">Student name</small>
         </div>
       </div>
       <div class="form-row">
         <div class="col-md-4 mb-3">
           <label for="labelStudentMail">Email</label>
-          <input type="email" class="form-control" name="email" aria-describedby="Email" required>
+          <input type="email" class="form-control" name="email"
+                 aria-describedby="Email" required readonly
+                 value="{{user.email}}">
           <small id="idHelp" class="form-text text-muted">Student email</small>
         </div>
         <div class="col-md-2 mb-3">
           <label for="labelStudentTel">Telephone</label>
-          <input type="text" class="form-control" name="telephone" aria-describedby="Telephone" required>
+          <input type="text" class="form-control" name="telephone"
+                 aria-describedby="Telephone" required readonly
+                 value="{{user.telephone}}">
           <small id="idHelp" class="form-text text-muted">Student telephone</small>
         </div>
       </div>

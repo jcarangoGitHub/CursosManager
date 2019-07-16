@@ -24,6 +24,10 @@ const userSchema = new Schema({
     enum: ['coordinator', 'candidate'],
     require: [true, 'Please select a Rol']
   },
+  telephone: {
+    type: String,
+    trim: true
+  },
   email: {
     type: String,
     require: true,
