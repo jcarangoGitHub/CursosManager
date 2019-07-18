@@ -164,6 +164,17 @@ hbs.registerHelper('registerStudent', (idCourse, documentId, name, email, teleph
   return text;
 });
 
+hbs.registerHelper('headerUserFields', (userRol) => {
+  console.log(userRol)
+  if (!userRol) {
+    return '<input class="form-control mr-2" type="text" name="email" placeholder="User email" required> ' +
+    '<input class="form-control mr-2" type="password" name="userPassword" placeholder="Password" required>' +
+    '<button class="btn btn-primary my-2 my-sm-0" type="submit">Login</button>'
+  } else {
+    return '<label>' + userRol + '</label>'
+  }
+});
+
 const saveStudent = () => {
   let data = JSON.stringify(listStudents);
   fs.writeFile('listStudents.json', data, (err)=>{

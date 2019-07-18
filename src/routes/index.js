@@ -8,7 +8,6 @@ const User = require('./../models/user');
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
 const bcrypt = require('bcrypt');
-var session = require('express-session');
 
 require('../helpers/helpers');
 
@@ -16,13 +15,6 @@ require('../helpers/helpers');
 app.set ('view engine', 'hbs');
 app.set ('views', dirViews);
 hbs.registerPartials(dirPartials);
-
-//SESSION
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true
-}))
 
 //GET METHODS
 app.get('/', (req, res) => {
@@ -32,23 +24,24 @@ app.get('/', (req, res) => {
 });
 
 app.get('/formNewCourse', (req, res) => {
-  if (req.session.userRol != 'coordinator') {
+  if (req.session.user.rol != 'coordinator') {
     res.render(dirViews + 'index', {
       myTitle: 'User not allowed to see this page'
     })
-  }
-  res.render(dirViews + 'formNewCourse', {
+  } else {
+    res.render(dirViews + 'formNewCourse', {
 
-  });
+    });
+  }
 });
 
 app.get('/formCourses', (req, res) => {
-  if (!req.session.userRol) {
+  if (!req.session.user.rol) {
     res.render(dirViews + 'index', {
       myTitle: 'You must login to see this page'
     })
   } else {
-    switch (req.session.userRol) {
+    switch (req.session.user.rol) {
       case 'coordinator':
         Course.find({status: 'available'}).exec((err, result) => {
           if (err) {
@@ -56,7 +49,7 @@ app.get('/formCourses', (req, res) => {
           }
           res.render(dirViews + 'formCourses', {
             resListCourses: result,
-            userRol: req.session.userRol
+            userRol: req.session.user.rol
           })
         });
         break;
@@ -67,7 +60,7 @@ app.get('/formCourses', (req, res) => {
           }
           res.render(dirViews + 'formCourses', {
             resListCourses: result,
-            userRol: req.session.userRol
+            userRol: req.session.user.rol
           })
         });
         break;
@@ -79,7 +72,7 @@ app.get('/formCourses', (req, res) => {
 });
 
 app.get('/formRegister', (req, res) => {
-  User.findById(req.session.user, (err, result) => {
+  User.findById(req.session.userId, (err, result) => {
     if (err) {
       return console.log(err)
     }
@@ -108,9 +101,22 @@ app.get('/formStudentsByCourse', (req, res) => {
 });
 
 app.get('/newUser', (req, res) => {
-  res.render(dirViews + 'formNewUser', {
+  if (req.session.user.rol != 'coordinator') {
+    res.render(dirViews + 'index', {
+      myTitle: 'User not allowed to see this page'
+    })
+  } else {
+    res.render(dirViews + 'formNewUser', {
 
+    });
+  }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return console.log(err)
   });
+  res.redirect('/');
 });
 
 app.get('*', (req, res) => {
@@ -129,10 +135,12 @@ app.post('/login', (req, res) => {
 
     if (result) {
       if (bcrypt.compareSync(req.body.userPassword, result.password)) {
-        req.session.user = result._id
-        req.session.userRol = result.rol
+        req.session.userId = result._id
+        req.session.user = result
         res.render(dirViews + 'index', {
-          myTitle: 'Welcome ' + result.firstName
+          myTitle: 'Welcome ' + result.firstName,
+          session: true,
+          user: req.session.user
         })
       } else {
         res.render(dirViews + 'index', {
