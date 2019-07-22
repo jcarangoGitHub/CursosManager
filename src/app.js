@@ -9,6 +9,9 @@ var session = require('express-session');
 //Paths
 const dirPublic = path.join(__dirname, '../public');
 const dirNodeModules = path.join(__dirname, '../node_modules');
+//PORT
+const port = process.env.PORT || 3000;
+
 
 //static
 app.use(express.static(dirPublic));
@@ -47,6 +50,6 @@ mongoose.connect('mongodb://localhost:27017/coursesManager',
   });
 
 
-app.listen(process.env.PORT, () => {
-  console.log('Escuchando en el puerto ' + process.env.PORT);
+app.listen(port, () => {
+  console.log('Listening on port ' + process.env.PORT);
 });
