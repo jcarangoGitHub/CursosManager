@@ -4,11 +4,10 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'local';
 //process.env.URLDB = 'mongodb://localhost:27017/coursesManager'
 
 let urlDB
-if (process.env.NODE_ENV === 'local'){
+if (process.env.NODE_ENV === 'local') {
 	urlDB = 'mongodb://localhost:27017/coursesManager';
-}
-else
-	urlDB = 'mongodb+srv://jca-admin:jca87admin@cluster0-zfyfv.mongodb.net/coursesManager?retryWrites=true'
+} else {
+	urlDB = 'mongodb+srv://jca-admin:jca87admin@cluster0-zfyfv.mongodb.net/coursesManager?retryWrites=true';
 }
 
 process.env.URLDB = urlDB
