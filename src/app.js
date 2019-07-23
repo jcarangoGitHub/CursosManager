@@ -43,7 +43,7 @@ app.use(require('./routes/index'))
 //Mongo connection
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resutl) => {
     if (err) {
-      return console.log('Error connecting db coursesManager')
+      return console.log('Error connecting db coursesManager: ' + err)
     }
     return console.log('Connected to coursesManager successfully!')
   });
