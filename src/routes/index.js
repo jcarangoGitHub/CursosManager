@@ -2,12 +2,16 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const hbs = require('hbs');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const bcrypt = require('bcrypt');
+
 const Course = require('./../models/course');
 const RegisteredStudent = require('./../models/registeredStudents');
 const User = require('./../models/user');
+
 const dirPartials = path.join(__dirname, '../../template/partials');
 const dirViews = path.join(__dirname, '../../template/views/');
-const bcrypt = require('bcrypt');
 
 require('../helpers/helpers');
 
@@ -243,6 +247,14 @@ app.post('/registerStudent', (req, res) => {
         myTitle: err
       })
     }
+
+    const msg = {
+     to: req.body.email,
+     from: 'juancamiloarango@gmail.com',
+     subject: 'Welcome to course',
+     text: 'Welcome, you has been registered successfully'
+    };
+    sgMail.send(msg);
     res.render(dirViews + 'index', {
       myTitle: 'Student registered successful!'
     })
