@@ -5,6 +5,7 @@ const hbs = require('hbs');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const bcrypt = require('bcrypt');
+const multer  = require('multer');
 
 const Course = require('./../models/course');
 const RegisteredStudent = require('./../models/registeredStudents');
@@ -22,8 +23,14 @@ hbs.registerPartials(dirPartials);
 
 //GET METHODS
 app.get('/', (req, res) => {
+  userImage = null
+  if (req.session.userImage) {
+    userImage = req.session.userImage
+  }
+  console.log(userImage)
   res.render(dirViews + 'index', {
-    myTitle: req.body.myTitle
+    myTitle: req.body.myTitle,
+    userImage: userImage
   });
 });
 
@@ -141,10 +148,16 @@ app.post('/login', (req, res) => {
       if (bcrypt.compareSync(req.body.userPassword, result.password)) {
         req.session.userId = result._id
         req.session.user = result
+        userImage = null
+        if (result.image != null) {
+          userImage = result.image.toString('base64')
+          req.session.userImage = userImage
+        }
         res.render(dirViews + 'index', {
-          myTitle: 'Welcome ' + result.firstName,
-          session: true,
-          user: req.session.user
+          myTitle   : 'Welcome ' + result.firstName,
+          session   : true,
+          user      : req.session.user,
+          userImage : userImage
         })
       } else {
         res.render(dirViews + 'index', {
@@ -160,7 +173,29 @@ app.post('/login', (req, res) => {
   })
 })
 
-app.post('/createNewUser', (req, res) => {
+var upload = multer({
+  limits: {
+    fileSize : 10000000 //MB
+  },
+  fileFilter (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
+      return cb(new Error('Invalid file'))
+    }
+  // The function should call `cb` with a boolean
+  // to indicate if the file should be accepted
+
+  // To reject this file pass `false`, like so:
+  //cb(null, false)
+
+  // To accept the file pass `true`, like so:
+  cb(null, true)
+
+  // You can always pass an error if something goes wrong:
+  //cb(new Error('I don\'t have a clue!'))
+
+}
+});
+app.post('/createNewUser', upload.single('userImage'), (req, res) => {
   let user = new User({
     documentId: req.body.documentId,
     lastName: req.body.lastName,
@@ -168,7 +203,8 @@ app.post('/createNewUser', (req, res) => {
     rol: req.body.rol,
     email: req.body.email,
     userName: req.body.userName,
-    password: bcrypt.hashSync(req.body.password, 10)
+    password: bcrypt.hashSync(req.body.password, 10),
+    image: req.file.buffer
   });
 
   user.save((err, result) => {
