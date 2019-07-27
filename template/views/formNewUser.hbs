@@ -1,6 +1,7 @@
 {{>header}}
 <div class="container">
   <form action="/createNewUser" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="isUpdate" value="{{isUpdate}}">
     <div class="form-group">
       <h5 class="card-title">New user</h5>
       <br>
@@ -9,42 +10,56 @@
         <div class="form-row">
           <div class="col">
             <label for="labelDocumentId">Document ID</label>
-            <input type="text" class="form-control" name="documentId" aria-describedby="Document id" required>
+            <input type="text" class="form-control" name="documentId"
+                   aria-describedby="Document id" required
+                   {{#if isUpdate}} value="{{user.documentId}}" readonly {{/if}}>
           </div>
 
           <div class="col">
             <label for="labelLastName">Last name</label>
-            <input type="text" class="form-control" name="lastName" aria-describedby="Last name" required>
+            <input type="text" class="form-control" name="lastName"
+                   aria-describedby="Last name" required
+                   {{#if isUpdate}} value="{{user.lastName}}" readonly {{/if}}>
           </div>
           <div class="col">
             <label for="labelFirstName">First name</label>
-            <input type="text" class="form-control" name="firstName" aria-describedby="First name" required>
+            <input type="text" class="form-control" name="firstName"
+                   aria-describedby="First name" required
+                   {{#if isUpdate}} value="{{user.firstName}}" readonly {{/if}}>
           </div>
         </div>
         <!--ROW 2-->
         <div class="form-row">
           <div class="col">
             <label for="labelRol">Rol</label>
-            <select class="custom-select" name="rol" required aria-describedby="User rol">
+            <select class="custom-select" name="rol"
+                    aria-describedby="User rol" required
+                    {{#if isUpdate}} value="{{user.rol}}" {{/if}}>
               <option value="coordinator">Coordinator</option>
-              <option selected value="candidate">Student candidate</option>
+              <option {{#if isUpdate}} {{else}} selected {{/if}} value="candidate">Student candidate</option>
             </select>
           </div>
           <div class="col">
             <label for="labelRol">Telephone number</label>
-            <input type="text" class="form-control" name="telephone" aria-describedby="Telephone number">
+            <input type="text" class="form-control" name="telephone"
+                   aria-describedby="Telephone number"
+                   {{#if isUpdate}} value="{{user.telephone}}" {{/if}}>
           </div>
         </div>
         <!--ROW 4-->
         <div class="form-row">
           <div class="col">
             <label for="labelStudentMail">Email</label>
-            <input type="email" class="form-control" name="email" aria-describedby="Email" required>
+            <input type="email" class="form-control" name="email"
+                   aria-describedby="Email" required
+                   {{#if isUpdate}} value="{{user.email}}" {{/if}}>
             <small id="emailHelp" class="form-text text-muted">Unique email</small>
           </div>
           <div class="col">
             <label for="labelUserName">User name</label>
-            <input type="text" class="form-control" name="userName" aria-describedby="User name">
+            <input type="text" class="form-control" name="userName"
+                   aria-describedby="User name"
+                   {{#if isUpdate}} value="{{user.userName}}" readonly {{/if}}>
             <small id="userNameHelp" class="form-text text-muted">Unique user name</small>
           </div>
         </div>
@@ -52,18 +67,23 @@
         <div class="form-row">
           <div class="col">
             <label for="labelPassword">Password</label>
-            <input type="text" class="form-control" name="password" aria-describedby="Password" required>
+            <input type="text" class="form-control" name="password"
+                   aria-describedby="Password"
+                   {{#if isUpdate}} readonly {{else}} required {{/if}}>
           </div>
           <div class="col">
             <label for="labelRepeatPassword">Repeat password</label>
-            <input type="text" class="form-control" name="repeatPassword" aria-describedby="Repeat password" required>
+            <input type="text" class="form-control" name="repeatPassword"
+              aria-describedby="Repeat password"
+              {{#if isUpdate}} readonly {{else}} required {{/if}}>
           </div>
         </div>
         <!--ROW 6-->
         <div class="form row">
           <div class="col">
             <label for="labelFile">User image</label>
-            <input type="file" class="form-control" name="userImage" accept="image/" required>
+            <input type="file" class="form-control" name="userImage" accept="image/"
+            {{#if isUpdate}} {{else}} required {{/if}}>
           </div>
         </div>
         <!--ROW 7 null-->

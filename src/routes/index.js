@@ -111,17 +111,24 @@ app.get('/formStudentsByCourse', (req, res) => {
   });
 });
 
-app.get('/newUser', (req, res) => {
+app.get('/formNewUser', (req, res) => {
   if (req.session.user.rol != 'coordinator') {
     res.render(dirViews + 'index', {
       myTitle: 'User not allowed to see this page'
     })
   } else {
     res.render(dirViews + 'formNewUser', {
-
+      isUpdate: false
     });
   }
 });
+
+app.get('/formUpdateUser', (req, res) => {
+  res.render(dirViews + 'formNewUser', {
+    isUpdate: true,
+    user: req.session.user
+  });
+})
 
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
@@ -202,29 +209,51 @@ var upload = multer({
 }
 });
 app.post('/createNewUser', upload.single('userImage'), (req, res) => {
-  let user = new User({
-    documentId: req.body.documentId,
-    lastName: req.body.lastName,
-    firstName: req.body.firstName,
-    rol: req.body.rol,
-    email: req.body.email,
-    userName: req.body.userName,
-    password: bcrypt.hashSync(req.body.password, 10),
-    telephone: req.body.telephone,
-    image: req.file.buffer
-  });
-
-  user.save((err, result) => {
-    if (err) {
-      res.render(dirViews + 'index', {
-        myTitle: err
-      })
+  console.log(req.body.isUpdate);
+  if (req.body.isUpdate) {
+    var userImage;
+    if (req.file) {
+      userImage = req.file.buffer
+    } else {
+      userImage = req.session.user.image
     }
+    User.updateOne({documentId: req.body.documentId},
+                   {rol: req.body.rol,
+                    email: req.body.email,
+                    telephone: req.body.telephone,
+                    image: userImage},
+                    (err, result) => {
+                        if (err) {
+                          return console.log('Error updating')
+                        }
+                        res.render(dirViews + 'index', {
+                          myTitle: 'User updated successfully!'
+                        })
+                    });
+  } else {
+    let user = new User({
+      documentId: req.body.documentId,
+      lastName: req.body.lastName,
+      firstName: req.body.firstName,
+      rol: req.body.rol,
+      email: req.body.email,
+      userName: req.body.userName,
+      password: bcrypt.hashSync(req.body.password, 10),
+      telephone: req.body.telephone,
+      image: req.file.buffer
+    });
+    user.save((err, result) => {
+      if (err) {
+        res.render(dirViews + 'index', {
+          myTitle: err
+        })
+      }
 
-    res.render(dirViews + 'index', {
-      myTitle: 'User  created successfully!'
+      res.render(dirViews + 'index', {
+        myTitle: 'User  created successfully!'
+      })
     })
-  })
+  }
 })
 
 app.post('/createCourse', (req, res) => {
