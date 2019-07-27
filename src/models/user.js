@@ -43,7 +43,8 @@ const userSchema = new Schema({
     require: true
   },
   image: {
-    type: Buffer
+    type: Buffer,
+    require: true
   }
 })
 

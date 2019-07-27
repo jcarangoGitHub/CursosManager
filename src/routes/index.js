@@ -185,7 +185,7 @@ var upload = multer({
   },
   fileFilter (req, file, cb) {
     if (!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
-      return cb(new Error('Invalid file'))
+      return cb(new Error('Invalid file. Use jpg, png or jpeg files'))
     }
   // The function should call `cb` with a boolean
   // to indicate if the file should be accepted
@@ -210,6 +210,7 @@ app.post('/createNewUser', upload.single('userImage'), (req, res) => {
     email: req.body.email,
     userName: req.body.userName,
     password: bcrypt.hashSync(req.body.password, 10),
+    telephone: req.body.telephone,
     image: req.file.buffer
   });
 
