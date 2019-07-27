@@ -5,6 +5,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var session = require('express-session');
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 
 //Paths
 const dirPublic = path.join(__dirname, '../public');
@@ -42,13 +45,35 @@ app.use(require('./routes/index'))
 
 //Mongo connection
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, resutl) => {
-    if (err) {
-      return console.log('Error connecting db coursesManager: ' + err)
-    }
-    return console.log('Connected to coursesManager successfully!')
-  });
+  if (err) {
+    return console.log('Error connecting db coursesManager: ' + err)
+  }
+  return console.log('Connected to coursesManager successfully!')
+});
 
+let counter = 0;
+io.on('connection', client => {
+  console.log('user has connected')
+  client.emit('message', 'Welcome to page')
 
-app.listen(port, () => {
+  client.on("message", (information) => {
+    console.log(information)
+  })
+
+  client.on("counter", () => {
+    counter ++
+    console.log(counter)
+    //client.emit('counter', counter)
+    io.emit('counter', counter)
+  })
+
+  client.on("messageToAll", (messageToAll, callback) => {
+    console.log(messageToAll)
+    io.emit("messageToAll", messageToAll)
+    callback()
+  })
+})
+
+server.listen(port, () => {
   console.log('Listening on port ' + process.env.PORT);
 });

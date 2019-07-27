@@ -1,0 +1,43 @@
+{{>header}}
+<div class="container">
+  <form method="get">
+    <div class="form-group">
+      <h5 class="card-title">Hi {{nickname}}, this a general chat room, all users connected can read your message</h5>
+      <br>
+      <div class="container">
+        <!--ROW 1-->
+        <div class="form-row">
+          <div class="col">
+            <div id="divChat"></div>
+          </div>
+        </div>
+        <!--ROW 2-->
+        <div class="form-row">
+          <div class="col">
+            <!--<label for="labelDocumentId">Message</label>-->
+            <input id="messageToAll" type="text" class="form-control"
+              aria-describedby="Message to all">
+          </div>
+        </div>
+        <!--ROW 3 null-->
+        <div class="form-row">
+          <div class="col">
+            &nbsp
+          </div>
+        </div>
+        <!--ROW 4-->
+        <div class="form-row">
+          <div class="col">
+            <button class="btn btn-primary my-2 my-sm-0" onclick="sendMessage(event, '{{nickname}}');">Send</button>
+            <!--<button id="btnSendMessage" class="btn btn-primary my-2 my-sm-0">Send</button>-->
+          </div>
+          <div class="col">
+            <button class="btn btn-secondary my-2 my-sm-0" onclick="document.getElementById('divChat').value = '';">Clear</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{{>footer}}

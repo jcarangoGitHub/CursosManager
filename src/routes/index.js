@@ -130,6 +130,12 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/formChat', (req, res) => {
+  res.render(dirViews + 'formChat', {
+    nickname: req.session.user.firstName
+  });
+})
+
 app.get('*', (req, res) => {
   res.render(dirViews + 'error', {
     estudiante: 'error'
