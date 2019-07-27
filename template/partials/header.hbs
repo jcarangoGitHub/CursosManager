@@ -10,29 +10,7 @@
   <body>
     <script src="socket.io/socket.io.js"></script>
     <script src="js/socket.js"></script>
-    <script type="text/javascript">
-      <!--socket = io()-->
-      var divChat = document.getElementById('divChat');
-      function sendMessage(e, nickname) {
-        if(!divChat) {
-          divChat = document.getElementById('divChat');
-        }
-        e.preventDefault();
-        var messageElem = document.getElementById('messageToAll');
-        var message = messageElem.value
-        if (message) {
-          socket.emit("messageToAll", messageElem.value, () => {
-            //divChat.innerHTML = divChat.innerHTML + messageElem.value + '</br>'
-            messageElem.value = ''
-            messageElem.focus()
-          });
-
-          socket.on("messageToAll", (messageToAll) => {
-            divChat.innerHTML = divChat.innerHTML + nickname + ': ' + messageToAll + '<br>'
-          })
-        }
-      }
-    </script>
+    
     <div class="jumbotron">
       <div class="container">
         <div class="row">
